@@ -1,15 +1,22 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
-const client = {
-  search: async (query: string) => {
-    try {
-      const response = await axios.get(`http://127.0.0.1:5000/api/hello`);
-      return response.data;
-    } catch (error: any) {
-      console.error("AxiosError:", error.message);
-      throw error;
+export function fetchProducts(page: number, pageSize: number, searchQuery?: string, useElasticsearch?: boolean) {
+  let params = {};
+  console.log("Fetching products:");
+  console.log(useElasticsearch);
+  console.log(searchQuery);
+  if (searchQuery) {
+    let searchType;
+    if (useElasticsearch) {
+      searchType = "elasticsearch";
+    } else {
+      searchType = "mongo";
     }
-  },
-};
-
-export default client;
+    params = { page, page_size: pageSize, search: searchQuery, search_type: searchType }
+  } else {
+    params = { page, page_size: pageSize }
+  }
+  return axios.get("http://localhost:5000/api/products", {
+    params,
+  });
+}

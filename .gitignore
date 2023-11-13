@@ -13,9 +13,6 @@ next-env.d.ts
 # Ignore Flask instance folder (for development settings)
 instance/
 
-# Ignore Flask environment settings
-.env
-
 # Ignore Elasticsearch data
 elasticsearch/data/
 

@@ -23,7 +23,6 @@ export default function RootLayout({
       <header className="bg-gray-800 text-white">
         <div className="max-w-screen-lg mx-auto py-4 px-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Search APP</h1>
-          <SearchBar />
         </div>
       </header>
       <main className="flex-grow">{children}</main>

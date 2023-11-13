@@ -11,6 +11,11 @@ services:
     depends_on:
       - mongodb
       - elasticsearch
+    restart: on-failure
+    environment:
+      - MONGO_URI=mongodb://$MONGO_INITDB_ROOT_USERNAME:$MONGO_INITDB_ROOT_PASSWORD@mongodb:27017/mydb
+      - ELASTIC_URI=http://elasticsearch:9200
+      - PYTHONUNBUFFERED=1
 
   # Frontend service (Next.js)
   frontend:
@@ -26,12 +31,17 @@ services:
   # MongoDB service
   mongodb:
     image: mongo:latest
+    hostname: mongodb
     ports:
       - "27017:27017"
     volumes:
-      - ./mongodb:/data/db
+      - ./mongodb:/var/lib/mongo/db
     environment:
-      - MONGO_INITDB_DATABASE=mydb
+      MONGO_INITDB_DATABASE: $MONGO_INITDB_DATABASE
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_INITDB_ROOT_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_INITDB_ROOT_PASSWORD
+      MONGO_INITDB_ROOT_INITDBNAME: $MONGO_INITDB_ROOT_INITDBNAME
+      MONGO_INITDB_HOSTNAME: $MONGO_INITDB_HOSTNAME
 
   # Elasticsearch service
   elasticsearch:
@@ -41,8 +51,9 @@ services:
       - "9300:9300"
     environment:
       - discovery.type=single-node
+      - cluster.routing.allocation.disk.threshold_enabled=false 
     volumes:
-      - ./elasticsearch:/usr/share/elasticsearch/data
+      - ./elasticsearch.yml:/var/lib/elasticsearch/data
 
 volumes:
   mongodb:
